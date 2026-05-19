@@ -89,7 +89,10 @@ export function ConfigList({ filters }: ConfigListProps) {
                   {config.effectiveScope.type === 'unified' ? (
                     <span>统一生效</span>
                   ) : (
-                    <span>定向生效</span>
+                    <span>
+                      定向生效
+                      {config.effectiveScope.listType === 'blacklist' ? '(黑名单)' : '(白名单)'}
+                    </span>
                   )}
                 </TableCell>
                 <TableCell>{getStatusBadge(config.status)}</TableCell>

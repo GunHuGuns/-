@@ -10,6 +10,23 @@ export type ScopeType = "unified" | "targeted";
 // 名单类型
 export type ListType = "blacklist" | "whitelist";
 
+// Value类型
+export type ValueType =
+  | "number"
+  | "string"
+  | "json-object"
+  | "string-array"
+  | "number-array"
+  | "json-array"
+  | "custom";
+
+// Activity配置项
+export interface ActivityConfigItem {
+  key: string;
+  valueType: ValueType;
+  value: string;
+}
+
 // 模块
 export interface Module {
   id: string;
@@ -29,7 +46,7 @@ export interface Config {
   id: string;
   name: string;
   moduleId: string;
-  activityConfigs: Array<{ key: string; value: string }>;
+  activityConfigs: ActivityConfigItem[];
   effectiveScope: {
     type: ScopeType;
     categories?: string[];
@@ -37,7 +54,7 @@ export interface Config {
     models?: string[];
     countries?: string[];
     devices?: string[];
-    blacklist?: string[];
+    listType?: ListType;
   };
   scheduleDate?: string;
   scheduleTime?: string;
@@ -70,7 +87,7 @@ export interface ModuleFormData {
 export interface ConfigFormData {
   name: string;
   moduleId: string;
-  activityConfigs: Array<{ key: string; value: string }>;
+  activityConfigs: ActivityConfigItem[];
   effectiveScope: {
     type: ScopeType;
     categories?: string[];
@@ -78,7 +95,7 @@ export interface ConfigFormData {
     models?: string[];
     countries?: string[];
     devices?: string[];
-    blacklist?: string[];
+    listType?: ListType;
   };
   scheduleDate?: string;
   scheduleTime?: string;

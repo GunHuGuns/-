@@ -71,8 +71,8 @@ export const mockConfigs: Config[] = [
     name: "默认系统配置",
     moduleId: "mod-001",
     activityConfigs: [
-      { key: "com.os.settings.MainActivity", value: "theme:dark" },
-      { key: "language", value: "zh-CN" },
+      { key: "com.os.settings.MainActivity", valueType: "string", value: "theme:dark" },
+      { key: "language", valueType: "string", value: "zh-CN" },
     ],
     effectiveScope: {
       type: "unified",
@@ -90,8 +90,8 @@ export const mockConfigs: Config[] = [
     name: "相机夜景模式配置",
     moduleId: "mod-002",
     activityConfigs: [
-      { key: "com.os.camera.NightModeActivity", value: "enabled:true" },
-      { key: "sensitivity", value: "high" },
+      { key: "com.os.camera.NightModeActivity", valueType: "json-object", value: '{"enabled": true}' },
+      { key: "sensitivity", valueType: "string", value: "high" },
     ],
     effectiveScope: {
       type: "unified",
@@ -111,12 +111,12 @@ export const mockConfigs: Config[] = [
     name: "省电模式配置",
     moduleId: "mod-003",
     activityConfigs: [
-      { key: "com.os.battery.PowerSaveActivity", value: "mode:aggressive" },
+      { key: "com.os.battery.PowerSaveActivity", valueType: "string", value: "mode:aggressive" },
     ],
     effectiveScope: {
       type: "targeted",
       devices: ["device001", "device002", "device003"],
-      blacklist: [],
+      listType: "whitelist",
     },
     status: "draft",
     createdAt: new Date("2024-03-02"),

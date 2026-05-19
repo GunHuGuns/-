@@ -29,9 +29,11 @@ import { Label } from '@/components/ui/label';
 import { useConfigStore } from '@/lib/store';
 import { useModuleStore } from '@/lib/store';
 import { EffectiveScopeDialog, type EffectiveScope } from './effective-scope-dialog';
-import { ActivityConfigDialog, type ActivityConfig } from './activity-config-dialog';
+import { ActivityConfigDialog, type ActivityConfig, VALUE_TYPE_OPTIONS } from './activity-config-dialog';
 import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
+import type { Config } from '@/lib/types';
 
 const formSchema = z.object({
   name: z.string().min(1, '配置名称不能为空'),
@@ -39,6 +41,7 @@ const formSchema = z.object({
   activities: z.array(
     z.object({
       key: z.string(),
+      valueType: z.string(),
       value: z.string(),
     })
   ),
@@ -49,7 +52,7 @@ const formSchema = z.object({
     models: z.array(z.string()).optional(),
     countries: z.array(z.string()).optional(),
     devices: z.array(z.string()).optional(),
-    blacklist: z.array(z.string()).optional(),
+    listType: z.enum(['blacklist', 'whitelist']).optional(),
   }),
   enableSchedule: z.boolean().default(false),
   scheduleDate: z.string().optional(),
@@ -173,10 +176,15 @@ export function ConfigForm() {
                             {index + 1}
                           </span>
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium truncate" title={activity.key}>
-                              {activity.key}
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="font-medium truncate" title={activity.key}>
+                                {activity.key}
+                              </span>
+                              <span className="text-xs bg-secondary px-1.5 py-0.5 rounded shrink-0">
+                                {VALUE_TYPE_OPTIONS.find((o) => o.value === activity.valueType)?.label || activity.valueType}
+                              </span>
                             </div>
-                            <div className="text-muted-foreground truncate" title={activity.value}>
+                            <div className="text-muted-foreground text-xs font-mono truncate" title={activity.value}>
                               {activity.value}
                             </div>
                           </div>
@@ -209,7 +217,7 @@ export function ConfigForm() {
                     </span>
                   ) : (
                     <span>
-                      定向生效（设备: {effectiveScope.devices?.length || 0}）
+                      定向生效（{effectiveScope.listType === 'blacklist' ? '黑名单' : '白名单'}，设备: {effectiveScope.devices?.length || 0}）
                     </span>
                   )}
                 </div>
