@@ -151,14 +151,44 @@ export function ConfigForm() {
 
               {/* Activity配置 */}
               <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
-                <h3 className="font-semibold">Activity配置</h3>
-                <ActivityConfigDialog
-                  value={activities}
-                  onChange={setActivities}
-                />
-                <div className="text-sm text-muted-foreground">
-                  已配置 {activities.length} 个Activity
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold">Activity配置</h3>
+                  <ActivityConfigDialog
+                    value={activities}
+                    onChange={setActivities}
+                  />
                 </div>
+                {activities.length > 0 ? (
+                  <div className="space-y-2">
+                    <div className="text-sm text-muted-foreground">
+                      已配置 {activities.length} 个Activity：
+                    </div>
+                    <div className="space-y-1.5 max-h-40 overflow-y-auto">
+                      {activities.map((activity, index) => (
+                        <div
+                          key={index}
+                          className="flex items-start gap-2 text-sm p-2 bg-background rounded border"
+                        >
+                          <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded shrink-0">
+                            {index + 1}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium truncate" title={activity.key}>
+                              {activity.key}
+                            </div>
+                            <div className="text-muted-foreground truncate" title={activity.value}>
+                              {activity.value}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-sm text-muted-foreground">
+                    暂未配置Activity，点击右上角按钮添加
+                  </div>
+                )}
               </div>
 
               {/* 生效范围 */}
