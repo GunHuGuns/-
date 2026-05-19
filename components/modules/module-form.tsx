@@ -19,7 +19,7 @@ import {
   getModelsByBrand,
   COUNTRIES,
 } from "@/lib/data/constants";
-import { useStore } from "@/lib/store";
+import { useModuleStore } from "@/lib/store";
 import type { Module, ModuleFormData } from "@/lib/types";
 import { toast } from "sonner";
 
@@ -30,7 +30,7 @@ interface ModuleFormProps {
 
 export function ModuleForm({ module, onSuccess }: ModuleFormProps) {
   const router = useRouter();
-  const { addModule, updateModule } = useStore();
+  const { addModule, updateModule } = useModuleStore();
 
   const [formData, setFormData] = useState<ModuleFormData>({
     name: module?.name || "",

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { zhCN } from "date-fns/locale";
 import { MoreHorizontal, Pencil, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import {
   Table,
@@ -36,7 +35,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useStore } from "@/lib/store";
+import { useModuleStore } from "@/lib/store";
 import { ModuleForm } from "./module-form";
 import type { Module, ModuleSearchParams } from "@/lib/types";
 import { toast } from "sonner";
@@ -46,7 +45,7 @@ interface ModuleListProps {
 }
 
 export function ModuleList({ searchParams }: ModuleListProps) {
-  const { modules, toggleModuleStatus } = useStore();
+  const { modules, toggleModuleStatus } = useModuleStore();
   const [editingModule, setEditingModule] = useState<Module | null>(null);
   const [statusDialogModule, setStatusDialogModule] = useState<Module | null>(null);
 
@@ -149,9 +148,7 @@ export function ModuleList({ searchParams }: ModuleListProps) {
                     {module.packageName}
                   </TableCell>
                   <TableCell>
-                    {format(new Date(module.createdAt), "yyyy-MM-dd HH:mm", {
-                      locale: zhCN,
-                    })}
+                    {format(new Date(module.createdAt), "yyyy-MM-dd HH:mm")}
                   </TableCell>
                   <TableCell>{module.category}</TableCell>
                   <TableCell>{module.brand}</TableCell>

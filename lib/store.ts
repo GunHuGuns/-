@@ -4,15 +4,17 @@ import { create } from "zustand";
 import type { Module, Config } from "@/lib/types";
 import { mockModules, mockConfigs } from "@/lib/data/mock-data";
 
-interface StoreState {
-  // 模块数据
+// 模块 Store
+interface ModuleStoreState {
   modules: Module[];
   addModule: (module: Omit<Module, "id" | "createdAt" | "updatedAt">) => void;
   updateModule: (id: string, data: Partial<Module>) => void;
   toggleModuleStatus: (id: string) => void;
   deleteModule: (id: string) => void;
+}
 
-  // 配置数据
+// 配置 Store
+interface ConfigStoreState {
   configs: Config[];
   addConfig: (config: Omit<Config, "id" | "createdAt" | "updatedAt">) => void;
   updateConfig: (id: string, data: Partial<Config>) => void;
@@ -24,8 +26,8 @@ function generateId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
-export const useStore = create<StoreState>((set) => ({
-  // 初始化模块数据
+// 模块 Store
+export const useModuleStore = create<ModuleStoreState>((set) => ({
   modules: mockModules,
 
   addModule: (moduleData) =>
@@ -65,8 +67,10 @@ export const useStore = create<StoreState>((set) => ({
     set((state) => ({
       modules: state.modules.filter((m) => m.id !== id),
     })),
+}));
 
-  // 初始化配置数据
+// 配置 Store
+export const useConfigStore = create<ConfigStoreState>((set) => ({
   configs: mockConfigs,
 
   addConfig: (configData) =>

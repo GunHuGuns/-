@@ -29,23 +29,21 @@ export interface Config {
   id: string;
   name: string;
   moduleId: string;
-  activityName: string;
-  activityValue: Record<string, unknown>;
-  scopeType: ScopeType;
-  // 统一生效
-  categories?: string[];
-  brands?: string[];
-  models?: string[];
-  countries?: string[];
-  // 定向生效
-  deviceList?: string[];
-  listType?: ListType;
-  // 定时发布
-  isScheduled: boolean;
-  scheduledTime?: Date;
+  activityConfigs: Array<{ key: string; value: string }>;
+  effectiveScope: {
+    type: ScopeType;
+    categories?: string[];
+    brands?: string[];
+    models?: string[];
+    countries?: string[];
+    devices?: string[];
+    blacklist?: string[];
+  };
+  scheduleDate?: string;
+  scheduleTime?: string;
   status: ConfigStatus;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt?: Date;
 }
 
 // 模块查询参数
@@ -72,15 +70,16 @@ export interface ModuleFormData {
 export interface ConfigFormData {
   name: string;
   moduleId: string;
-  activityName: string;
-  activityValue: Record<string, unknown>;
-  scopeType: ScopeType;
-  categories?: string[];
-  brands?: string[];
-  models?: string[];
-  countries?: string[];
-  deviceList?: string[];
-  listType?: ListType;
-  isScheduled: boolean;
-  scheduledTime?: Date;
+  activityConfigs: Array<{ key: string; value: string }>;
+  effectiveScope: {
+    type: ScopeType;
+    categories?: string[];
+    brands?: string[];
+    models?: string[];
+    countries?: string[];
+    devices?: string[];
+    blacklist?: string[];
+  };
+  scheduleDate?: string;
+  scheduleTime?: string;
 }
