@@ -6,6 +6,7 @@ import {
   BoxesIcon,
   SettingsIcon,
   LayoutDashboardIcon,
+  FileTextIcon,
 } from "lucide-react";
 import {
   Sidebar,
@@ -29,6 +30,11 @@ const menuItems = [
     title: "配置管理",
     url: "/configs",
     icon: SettingsIcon,
+  },
+  {
+    title: "PRD文档",
+    url: "/prd",
+    icon: FileTextIcon,
   },
 ];
 
