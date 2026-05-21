@@ -118,7 +118,7 @@ export const mockConfigs: Config[] = [
       devices: ["device001", "device002", "device003"],
       listType: "whitelist",
     },
-    status: "draft",
+    status: "published",
     createdAt: new Date("2024-03-02"),
     updatedAt: new Date("2024-03-04"),
   },

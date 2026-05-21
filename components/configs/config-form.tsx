@@ -29,7 +29,7 @@ import { Label } from '@/components/ui/label';
 import { useConfigStore } from '@/lib/store';
 import { useModuleStore } from '@/lib/store';
 import { EffectiveScopeDialog, type EffectiveScope } from './effective-scope-dialog';
-import { ActivityConfigDialog, type ActivityConfig, VALUE_TYPE_OPTIONS } from './activity-config-dialog';
+import { ActivityConfigPanel, type ActivityConfig, VALUE_TYPE_OPTIONS } from './activity-config-panel';
 import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
@@ -89,8 +89,7 @@ export function ConfigForm() {
       effectiveScope,
       scheduleDate: values.enableSchedule ? values.scheduleDate : undefined,
       scheduleTime: values.enableSchedule ? values.scheduleTime : undefined,
-      status: 'draft',
-      createdAt: new Date(),
+      status: values.enableSchedule ? 'scheduled' : 'published',
     });
 
     router.push('/configs');
@@ -152,51 +151,13 @@ export function ConfigForm() {
                 />
               </div>
 
-              {/* Activity配置 */}
+              {/* Activity配置 - 直接展示在页面 */}
               <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold">Activity配置</h3>
-                  <ActivityConfigDialog
-                    value={activities}
-                    onChange={setActivities}
-                  />
-                </div>
-                {activities.length > 0 ? (
-                  <div className="space-y-2">
-                    <div className="text-sm text-muted-foreground">
-                      已配置 {activities.length} 个Activity：
-                    </div>
-                    <div className="space-y-1.5 max-h-40 overflow-y-auto">
-                      {activities.map((activity, index) => (
-                        <div
-                          key={index}
-                          className="flex items-start gap-2 text-sm p-2 bg-background rounded border"
-                        >
-                          <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded shrink-0">
-                            {index + 1}
-                          </span>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-medium truncate" title={activity.key}>
-                                {activity.key}
-                              </span>
-                              <span className="text-xs bg-secondary px-1.5 py-0.5 rounded shrink-0">
-                                {VALUE_TYPE_OPTIONS.find((o) => o.value === activity.valueType)?.label || activity.valueType}
-                              </span>
-                            </div>
-                            <div className="text-muted-foreground text-xs font-mono truncate" title={activity.value}>
-                              {activity.value}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-sm text-muted-foreground">
-                    暂未配置Activity，点击右上角按钮添加
-                  </div>
-                )}
+                <h3 className="font-semibold">Activity配置</h3>
+                <ActivityConfigPanel
+                  value={activities}
+                  onChange={setActivities}
+                />
               </div>
 
               {/* 生效范围 */}

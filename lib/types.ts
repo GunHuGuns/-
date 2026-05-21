@@ -1,8 +1,8 @@
 // 模块状态
 export type ModuleStatus = "online" | "offline";
 
-// 配置状态
-export type ConfigStatus = "draft" | "published" | "scheduled";
+// 配置状态（无草稿状态）
+export type ConfigStatus = "published" | "scheduled";
 
 // 生效范围类型
 export type ScopeType = "unified" | "targeted";
@@ -18,13 +18,23 @@ export type ValueType =
   | "string-array"
   | "number-array"
   | "json-array"
-  | "custom";
+  | "custom"
+  | "attachment"
+  | "multilang";
+
+// 多语言配置项
+export interface MultiLangItem {
+  language: string;
+  text: string;
+}
 
 // Activity配置项
 export interface ActivityConfigItem {
   key: string;
   valueType: ValueType;
   value: string;
+  attachmentName?: string; // 附件文件名
+  multiLangValues?: MultiLangItem[]; // 多语言值
 }
 
 // 模块
