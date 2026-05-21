@@ -90,7 +90,6 @@ export function ConfigForm() {
       scheduleDate: values.enableSchedule ? values.scheduleDate : undefined,
       scheduleTime: values.enableSchedule ? values.scheduleTime : undefined,
       status: values.enableSchedule ? 'scheduled' : 'published',
-      createdAt: new Date(),
     });
 
     router.push('/configs');

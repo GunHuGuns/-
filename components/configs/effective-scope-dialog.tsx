@@ -295,7 +295,7 @@ export function EffectiveScopeDialog({
               <div className="border rounded-lg p-3">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold text-sm">品类</h4>
-                  <Button variant="ghost" size="xs" onClick={selectAllCategories}>
+                  <Button variant="ghost" size="sm" onClick={selectAllCategories}>
                     {selectedCategories.length === CATEGORIES.length
                       ? '全不选'
                       : '全选'}
