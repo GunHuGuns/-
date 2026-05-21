@@ -76,7 +76,7 @@ export function ActivityConfigPanel({
   const [newKey, setNewKey] = useState('');
   const [newValueType, setNewValueType] = useState<ValueType>('string');
   const [newValue, setNewValue] = useState('');
-  const [newAttachment, setNewAttachment] = useState<File | null>(null);
+  const [newAttachments, setNewAttachments] = useState<File[]>([]);
   const [newMultiLang, setNewMultiLang] = useState<MultiLangItem[]>([
     { language: 'zh-CN', text: '' },
     { language: 'en-US', text: '' },
@@ -136,10 +136,18 @@ export function ActivityConfigPanel({
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setNewAttachment(file);
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setNewAttachments(prev => [...prev, ...Array.from(files)]);
     }
+    // 重置input以便可以再次选择同一文件
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const removeAttachment = (index: number) => {
+    setNewAttachments(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleMultiLangChange = (index: number, field: 'language' | 'text', val: string) => {
@@ -166,7 +174,7 @@ export function ActivityConfigPanel({
     if (!newKey.trim()) return false;
     
     if (newValueType === 'attachment') {
-      return !!newAttachment;
+      return newAttachments.length > 0;
     }
     
     if (newValueType === 'multilang') {
@@ -183,9 +191,10 @@ export function ActivityConfigPanel({
     let attachmentName: string | undefined;
     let multiLangValues: MultiLangItem[] | undefined;
 
-    if (newValueType === 'attachment' && newAttachment) {
-      configValue = `attachment:${newAttachment.name}`;
-      attachmentName = newAttachment.name;
+    if (newValueType === 'attachment' && newAttachments.length > 0) {
+      const fileNames = newAttachments.map(f => f.name);
+      configValue = `attachments:${fileNames.join(',')}`;
+      attachmentName = fileNames.join(', ');
     } else if (newValueType === 'multilang') {
       const validItems = newMultiLang.filter((item) => item.text.trim());
       multiLangValues = validItems;
@@ -207,7 +216,7 @@ export function ActivityConfigPanel({
     setNewKey('');
     setNewValueType('string');
     setNewValue('');
-    setNewAttachment(null);
+    setNewAttachments([]);
     setNewMultiLang([
       { language: 'zh-CN', text: '' },
       { language: 'en-US', text: '' },
@@ -227,10 +236,16 @@ export function ActivityConfigPanel({
 
   const renderValueDisplay = (config: ActivityConfig) => {
     if (config.valueType === 'attachment') {
+      const fileNames = config.attachmentName?.split(', ') || [];
       return (
-        <div className="flex items-center gap-1.5 text-muted-foreground">
-          <FileIcon className="size-3.5" />
-          <span>{config.attachmentName || '附件'}</span>
+        <div className="flex items-center gap-1.5 text-muted-foreground flex-wrap">
+          <FileIcon className="size-3.5 shrink-0" />
+          <span>{fileNames.length} 个附件</span>
+          {fileNames.length <= 3 ? (
+            <span className="text-xs">({fileNames.join(', ')})</span>
+          ) : (
+            <span className="text-xs">({fileNames.slice(0, 2).join(', ')} 等)</span>
+          )}
         </div>
       );
     }
@@ -342,14 +357,15 @@ export function ActivityConfigPanel({
           <Label className="text-sm">Value值</Label>
           
           {newValueType === 'attachment' ? (
-            /* 附件上传控件 */
-            <div className="mt-1.5">
+            /* 附件上传控件 - 支持多文件 */
+            <div className="mt-1.5 space-y-3">
               <input
                 ref={fileInputRef}
                 type="file"
                 onChange={handleFileChange}
                 className="hidden"
                 id="attachment-upload"
+                multiple
               />
               <div className="flex items-center gap-3">
                 <Button
@@ -361,24 +377,42 @@ export function ActivityConfigPanel({
                   <Upload className="size-4" />
                   选择文件
                 </Button>
-                {newAttachment && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <FileIcon className="size-4" />
-                    <span>{newAttachment.name}</span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setNewAttachment(null);
-                        if (fileInputRef.current) fileInputRef.current.value = '';
-                      }}
-                    >
-                      <X className="size-3" />
-                    </Button>
-                  </div>
-                )}
+                <span className="text-sm text-muted-foreground">
+                  支持上传多个附件
+                </span>
               </div>
+              {newAttachments.length > 0 && (
+                <div className="space-y-2 p-3 border rounded-lg bg-muted/30">
+                  <div className="text-sm text-muted-foreground">
+                    已选择 {newAttachments.length} 个文件：
+                  </div>
+                  <div className="space-y-1.5">
+                    {newAttachments.map((file, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between gap-2 p-2 bg-background rounded border"
+                      >
+                        <div className="flex items-center gap-2 text-sm min-w-0">
+                          <FileIcon className="size-4 shrink-0 text-muted-foreground" />
+                          <span className="truncate">{file.name}</span>
+                          <span className="text-xs text-muted-foreground shrink-0">
+                            ({(file.size / 1024).toFixed(1)} KB)
+                          </span>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeAttachment(index)}
+                          className="shrink-0 text-destructive hover:text-destructive"
+                        >
+                          <X className="size-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ) : newValueType === 'multilang' ? (
             /* 多语言表单 */
