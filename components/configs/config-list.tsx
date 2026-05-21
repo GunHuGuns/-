@@ -42,13 +42,11 @@ export function ConfigList({ filters }: ConfigListProps) {
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-      draft: 'secondary',
       published: 'default',
       scheduled: 'outline',
       archived: 'destructive',
     };
     const labels: Record<string, string> = {
-      draft: '草稿',
       published: '已发布',
       scheduled: '定时发布',
       archived: '已归档',
