@@ -334,7 +334,7 @@ export function EffectiveScopeDialog({
                     )}
                   </div>
                   {selectedCategories.length > 0 && (
-                    <Button variant="ghost" size="xs" onClick={selectAllBrands}>
+                    <Button variant="ghost" size="sm" onClick={selectAllBrands}>
                       {selectedBrands.length === availableBrands.length
                         ? '全不选'
                         : '全选'}
@@ -384,7 +384,7 @@ export function EffectiveScopeDialog({
                     )}
                   </div>
                   {selectedBrands.length > 0 && (
-                    <Button variant="ghost" size="xs" onClick={selectAllModels}>
+                    <Button variant="ghost" size="sm" onClick={selectAllModels}>
                       {selectedModels.length === availableModels.length
                         ? '全不选'
                         : '全选'}
@@ -426,7 +426,7 @@ export function EffectiveScopeDialog({
               <div className="border rounded-lg p-3">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-semibold text-sm">国家</h4>
-                  <Button variant="ghost" size="xs" onClick={selectAllCountries}>
+                  <Button variant="ghost" size="sm" onClick={selectAllCountries}>
                     {selectedCountries.length === COUNTRIES.length
                       ? '全不选'
                       : '全选'}
