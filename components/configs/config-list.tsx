@@ -199,6 +199,10 @@ export function ConfigList({ filters }: ConfigListProps) {
                   <div className="font-medium">{getModuleName(viewingConfig.moduleId)}</div>
                 </div>
                 <div>
+                  <div className="text-sm text-muted-foreground">OS版本</div>
+                  <div className="font-medium">{viewingConfig.osVersion || '全部版本'}</div>
+                </div>
+                <div>
                   <div className="text-sm text-muted-foreground">状态</div>
                   <div>{getStatusBadge(viewingConfig.status)}</div>
                 </div>
