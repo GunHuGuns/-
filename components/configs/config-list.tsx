@@ -36,10 +36,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { format } from 'date-fns';
 import { MoreHorizontal, Trash2, Eye, Pencil } from 'lucide-react';
 import { useConfigStore } from '@/lib/store';
 import { useModuleStore } from '@/lib/store';
+import { ClientDate } from '@/components/ui/client-date';
 import { Config } from '@/lib/types';
 import { toast } from 'sonner';
 
@@ -144,7 +144,7 @@ export function ConfigList({ filters }: ConfigListProps) {
                 </TableCell>
                 <TableCell>{getStatusBadge(config.status)}</TableCell>
                 <TableCell className="text-sm">
-                  {format(new Date(config.createdAt), 'yyyy-MM-dd HH:mm')}
+                  <ClientDate date={config.createdAt} />
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -199,13 +199,17 @@ export function ConfigList({ filters }: ConfigListProps) {
                   <div className="font-medium">{getModuleName(viewingConfig.moduleId)}</div>
                 </div>
                 <div>
+                  <div className="text-sm text-muted-foreground">OS版本</div>
+                  <div className="font-medium">{viewingConfig.osVersion || '全部版本'}</div>
+                </div>
+                <div>
                   <div className="text-sm text-muted-foreground">状态</div>
                   <div>{getStatusBadge(viewingConfig.status)}</div>
                 </div>
                 <div>
                   <div className="text-sm text-muted-foreground">创建时间</div>
                   <div className="font-medium">
-                    {format(new Date(viewingConfig.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+                    <ClientDate date={viewingConfig.createdAt} formatStr="yyyy-MM-dd HH:mm:ss" />
                   </div>
                 </div>
               </div>
@@ -295,7 +299,10 @@ export function ConfigList({ filters }: ConfigListProps) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>取消</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction 
+              onClick={handleDeleteConfirm} 
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
               删除
             </AlertDialogAction>
           </AlertDialogFooter>

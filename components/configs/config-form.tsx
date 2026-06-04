@@ -38,6 +38,7 @@ import type { Config } from '@/lib/types';
 const formSchema = z.object({
   name: z.string().min(1, '配置名称不能为空'),
   moduleId: z.string().min(1, '请选择模块'),
+  osVersion: z.string().optional(),
   activities: z.array(
     z.object({
       key: z.string(),
@@ -61,36 +62,57 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function ConfigForm() {
+interface ConfigFormProps {
+  config?: Config;
+}
+
+export function ConfigForm({ config }: ConfigFormProps) {
   const router = useRouter();
   const modules = useModuleStore((state) => state.modules);
   const addConfig = useConfigStore((state) => state.addConfig);
-  const [effectiveScope, setEffectiveScope] = useState<EffectiveScope>({
-    type: 'unified',
-  });
-  const [activities, setActivities] = useState<ActivityConfig[]>([]);
+  const updateConfig = useConfigStore((state) => state.updateConfig);
+  const [effectiveScope, setEffectiveScope] = useState<EffectiveScope>(
+    config?.effectiveScope || { type: 'unified' }
+  );
+  const [activities, setActivities] = useState<ActivityConfig[]>(
+    config?.activityConfigs || []
+  );
+
+  const isEditMode = !!config;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      moduleId: '',
+      name: config?.name || '',
+      moduleId: config?.moduleId || '',
+      osVersion: config?.osVersion || '',
       activities: [],
-      effectiveScope: { type: 'unified' },
-      enableSchedule: false,
+      effectiveScope: config?.effectiveScope || { type: 'unified' },
+      enableSchedule: !!config?.scheduleDate,
+      scheduleDate: config?.scheduleDate || '',
+      scheduleTime: config?.scheduleTime || '',
     },
   });
 
   const onSubmit = (values: FormValues) => {
-    addConfig({
+    const configData = {
       name: values.name,
       moduleId: values.moduleId,
+      osVersion: values.osVersion || undefined,
       activityConfigs: activities,
       effectiveScope,
       scheduleDate: values.enableSchedule ? values.scheduleDate : undefined,
       scheduleTime: values.enableSchedule ? values.scheduleTime : undefined,
       status: values.enableSchedule ? 'scheduled' : 'published',
-    });
+    };
+
+    if (isEditMode && config) {
+      updateConfig(config.id, configData);
+      toast.success('配置已更新');
+    } else {
+      addConfig(configData);
+      toast.success('配置已创建');
+    }
 
     router.push('/configs');
   };
@@ -101,8 +123,8 @@ export function ConfigForm() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>新建配置</CardTitle>
-          <CardDescription>填写配置基本信息</CardDescription>
+          <CardTitle>{isEditMode ? '编辑配置' : '新建配置'}</CardTitle>
+          <CardDescription>{isEditMode ? '修改配置信息' : '填写配置基本信息'}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -145,6 +167,23 @@ export function ConfigForm() {
                           ))}
                         </SelectContent>
                       </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="osVersion"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>OS版本（选填）</FormLabel>
+                      <FormControl>
+                        <Input placeholder="例如：1.0.0、2.1.3" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        指定配置生效的OS版本，留空则对所有版本生效
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -202,7 +241,7 @@ export function ConfigForm() {
                     )}
                   />
                   <Label className="font-semibold cursor-pointer">
-                    启用定时发布
+                    启用定时���布
                   </Label>
                 </div>
 
@@ -241,12 +280,13 @@ export function ConfigForm() {
               {/* 操作按钮 */}
               <div className="flex justify-end gap-3 pt-4">
                 <Button
+                  type="button"
                   variant="outline"
                   onClick={() => router.back()}
                 >
                   取消
                 </Button>
-                <Button type="submit">创建配置</Button>
+                <Button type="submit">{isEditMode ? '保存修改' : '创建配置'}</Button>
               </div>
             </form>
           </Form>

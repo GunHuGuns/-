@@ -55,7 +55,7 @@ export default function EditConfigPage() {
           <CardDescription>编辑配置的基本信息和生效范围</CardDescription>
         </CardHeader>
         <CardContent>
-          <ConfigForm />
+          <ConfigForm config={config} />
         </CardContent>
       </Card>
     </div>

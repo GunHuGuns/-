@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
 import { MoreHorizontal, Pencil, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import {
   Table,
@@ -37,6 +36,7 @@ import {
 } from "@/components/ui/dialog";
 import { useModuleStore } from "@/lib/store";
 import { ModuleForm } from "./module-form";
+import { ClientDate } from "@/components/ui/client-date";
 import type { Module, ModuleSearchParams } from "@/lib/types";
 import { toast } from "sonner";
 
@@ -148,7 +148,7 @@ export function ModuleList({ searchParams }: ModuleListProps) {
                     {module.packageName}
                   </TableCell>
                   <TableCell>
-                    {format(new Date(module.createdAt), "yyyy-MM-dd HH:mm")}
+                    <ClientDate date={module.createdAt} />
                   </TableCell>
                   <TableCell>{module.category}</TableCell>
                   <TableCell>{module.brand}</TableCell>

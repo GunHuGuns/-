@@ -56,6 +56,7 @@ export interface Config {
   id: string;
   name: string;
   moduleId: string;
+  osVersion?: string; // OS版本（选填）
   activityConfigs: ActivityConfigItem[];
   effectiveScope: {
     type: ScopeType;
@@ -97,6 +98,7 @@ export interface ModuleFormData {
 export interface ConfigFormData {
   name: string;
   moduleId: string;
+  osVersion?: string; // OS版本（选填）
   activityConfigs: ActivityConfigItem[];
   effectiveScope: {
     type: ScopeType;
